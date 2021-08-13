@@ -1,6 +1,6 @@
 {
-    "name": "Chrome Extension MV3",
-    "description": "Building a Chrome Extension MV3",
+    "name": "Simpli Security",
+    "description": "Securely Encrypt and Decrypt a text using a Open Source tool",
     "version": "0.1.0",
     "manifest_version": 3,
     "icons": {
@@ -13,7 +13,7 @@
         "service_worker": "./background.js"
     },
     "action": {
-        "default_popup": "./popup.html",
+        "default_popup": "popup/popup.html",
         "default_icons": {
             "16": "./images/icon-16x16.png",
             "32": "./images/icon-32x32.png",
@@ -21,7 +21,6 @@
             "128": "./images/icon-128x128.png"
         }
     },
-    "options_page": "./options.html",
     "permissions": [
         "activeTab",
         "tabs",
@@ -29,6 +28,10 @@
         "scripting"
     ],
     "host_permissions": [
-        "https://www.google.com/*"
-    ]
+        "<all_urls>"
+    ],
+    "content_scripts": [{
+        "matches": ["<all_urls>"],
+        "js": ["libs/tiny-toast.js", "libs/aes.js"]
+    }]
 }

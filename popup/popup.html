@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+    </head>
+
+    <body style="margin: 0; display: flex; flex-direction: column; width: 500px; padding: 24px; background: #f6f9ff">
+        <label style="display: flex; flex-direction: column; margin-bottom: 24px">
+            <span style="font-weight: bold; color: #557799; margin-bottom: 4px">
+                Text to be Encrypted
+            </span>
+            <textarea id="toBeEncrypted" rows="8" style="background: #eef0f9; border: none"></textarea>
+        </label>
+        <label id="selectKeyHolder" style="display: flex; align-items: center; margin-bottom: 24px">
+            <span style="font-weight: bold; margin-right: 16px; color: #557799">
+                Key
+            </span>
+            <select id="selectKey" style="flex-grow: 1; height: 32px; background: #eef0f9; border: none"></select>
+        </label>
+        <form id="newKeyForm" style="display: flex; margin-bottom: 24px; height: 32px">
+            <span style="font-weight: bold; margin-right: 16px; color: #557799; white-space: nowrap; align-self: center">
+                New Key
+            </span>
+            <input id="newKeyName" type="text" placeholder="Key Name"
+                   style="flex-grow: 1; flex-shrink: unset; flex-basis: 0; background: #eef0f9; border: none;
+                   margin-right: 8px" />
+            <input id="newKeyInput" type="password" placeholder="Key Secret"
+                   style="flex-grow: 1; flex-shrink: unset; flex-basis: 0; height: 32px; background: #eef0f9;
+                   border: none; margin-right: 8px" />
+            <button type="submit" style="flex-shrink: 0; background: #557799; border: none; color: white">Save</button>
+        </form>
+        <label style="display: flex; flex-direction: column">
+            <span style="font-weight: bold; color: #557799; margin-bottom: 4px">
+                Result
+            </span>
+            <textarea id="result" rows="8" style="background: #eef0f9; border: none"></textarea>
+        </label>
+        <script src="../libs/aes.js"></script>
+        <script src="../libs/tiny-toast.js"></script>
+        <script src="./main.js"></script>
+    </body>
+</html>

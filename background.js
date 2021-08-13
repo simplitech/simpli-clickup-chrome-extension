@@ -1,6 +1,6 @@
 chrome.runtime.onInstalled.addListener(() => {
     chrome.storage.local.set({
-        name: "Jack"
+        ADM: "admin"
     });
 });
 
@@ -8,14 +8,14 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     if (changeInfo.status === 'complete' && /^http/.test(tab.url)) {
         chrome.scripting.insertCSS({
             target: { tabId: tabId },
-            files: ["./foreground_styles.css"]
+            files: ["foreground/styles.css"]
         })
             .then(() => {
                 console.log("INJECTED THE FOREGROUND STYLES.");
 
                 chrome.scripting.executeScript({
                     target: { tabId: tabId },
-                    files: ["./foreground.js"]
+                    files: ["foreground/main.js"]
                 })
                     .then(() => {
                         console.log("INJECTED THE FOREGROUND SCRIPT.");
@@ -26,8 +26,9 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 });
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (request.message === 'get_name') {
-        chrome.storage.local.get('name', data => {
+    if (request.message === 'getKey') {
+        const role = request.payload
+        chrome.storage.local.get(role, data => {
             if (chrome.runtime.lastError) {
                 sendResponse({
                     message: 'fail'
@@ -38,15 +39,13 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
             sendResponse({
                 message: 'success',
-                payload: data.name
+                payload: data[role]
             });
         });
 
         return true;
-    } else if (request.message === 'change_name') {
-        chrome.storage.local.set({
-            name: request.payload
-        }, () => {
+    } else if (request.message === 'setKeys') {
+        chrome.storage.local.set(request.payload, () => {
             if (chrome.runtime.lastError) {
                 sendResponse({ message: 'fail' });
                 return;
@@ -54,6 +53,23 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
             sendResponse({ message: 'success' });
         })
+
+        return true;
+    } else if (request.message === 'getAllKeys') {
+        chrome.storage.local.get(null, data => {
+            if (chrome.runtime.lastError) {
+                sendResponse({
+                    message: 'fail'
+                });
+
+                return;
+            }
+
+            sendResponse({
+                message: 'success',
+                payload: data
+            });
+        });
 
         return true;
     }
