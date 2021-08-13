@@ -23,6 +23,7 @@ const reloadKeys = () => {
         }
       }
       renderSelectOrNewKeyForm()
+      encrypt()
     }
   });
 }
