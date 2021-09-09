@@ -29,20 +29,71 @@ document.body.addEventListener('mouseup', (e) => {
         if (response.message === 'success') {
 
             const key = response.payload
-            const code = CryptoJS.AES.decrypt(encrypted, key);
-            const decrypted = code.toString(CryptoJS.enc.Utf8);
+            const code = CryptoJS.AES.decrypt(encrypted, key)
+            const decrypted = code.toString(CryptoJS.enc.Utf8)
 
-            const el = document.createElement('textarea')
-            el.value = decrypted
-            el.setAttribute('readonly', '')
-            el.style.position = 'absolute'
-            el.style.left = '-9999px'
-            document.body.appendChild(el)
-            el.select()
-            document.execCommand('copy')
-            document.body.removeChild(el)
-
-            tinyToast.show('Decrypted and Copied 😘').hide(2000)
+            copyToClipboard(decrypted)
+            showDialog(decrypted)
         }
-    });
-}, false);
+    })
+}, false)
+
+const copyToClipboard = (content) => {
+    const el = document.createElement('textarea')
+    el.value = content
+    el.setAttribute('readonly', '')
+    el.style.position = 'absolute'
+    el.style.left = '-9999px'
+    document.body.appendChild(el)
+    el.select()
+    document.execCommand('copy')
+    document.body.removeChild(el)
+}
+
+const showDialog = (content) => {
+    // create the dialog
+    var modal = document.createElement('div')
+    modal.className = "modal"
+    modal.innerHTML = "" +
+      "<div class=\"modal-bg modal-exit\"></div>" +
+      "<div class=\"modal-container\">" +
+      "<h2>The content was decrypted and copied to your clipboard</h2>" +
+      "<p class='modal-content'><a class='modal-show-decrypted'>SHOW THE DECRYPTED CONTENT</a></p>" +
+      "<a class=\"modal-close modal-exit\">&times;</a>" +
+      "</div>"
+
+    // the dialog will auto-close unless the user clicks to read the content
+    const autoCloseAfterOpen = setTimeout(() => {
+        removeDialog(modal)
+    }, 3*1000)
+
+    // close behaviour
+    modal.querySelectorAll('.modal-exit').forEach((exit) => {
+        exit.addEventListener('click', (event) => {
+            event.preventDefault()
+            removeDialog(modal)
+        })
+    })
+
+    // show decrypted content behaviour
+    var show = modal.querySelector('.modal-show-decrypted')
+    show.addEventListener('click', (event) => {
+        event.preventDefault()
+        var modalContent = modal.querySelector('.modal-content')
+        modalContent.innerHTML = content
+
+        clearTimeout(autoCloseAfterOpen)
+
+        // the dialog will auto-close but waiting more
+        setTimeout(() => {
+            removeDialog(modal)
+        }, 5 * 60 * 1000)
+    })
+
+    // show the dialog
+    document.body.appendChild(modal)
+}
+
+const removeDialog = (modal) => {
+    document.body.removeChild(modal)
+}

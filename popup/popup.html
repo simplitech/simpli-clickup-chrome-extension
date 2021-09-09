@@ -7,36 +7,39 @@
         <title>Document</title>
     </head>
 
-    <body style="margin: 0; display: flex; flex-direction: column; width: 500px; padding: 24px; background: #f6f9ff">
+    <body style="margin: 0; display: flex; flex-direction: column; width: 500px; padding: 24px;
+    font-family: Roboto, Noto, sans-serif; font-size: 16px">
         <label style="display: flex; flex-direction: column; margin-bottom: 24px">
-            <span style="font-weight: bold; color: #557799; margin-bottom: 4px">
+            <span style="font-weight: bold; margin-bottom: 4px">
                 Text to be Encrypted
             </span>
-            <textarea id="toBeEncrypted" rows="8" style="background: #eef0f9; border: none"></textarea>
+            <textarea id="toBeEncrypted" rows="8" style="background: #efefef; border: none;
+            border-radius: 4px"></textarea>
         </label>
         <label id="selectKeyHolder" style="display: flex; align-items: center; margin-bottom: 24px">
-            <span style="font-weight: bold; margin-right: 16px; color: #557799">
+            <span style="font-weight: bold; margin-right: 16px">
                 Key
             </span>
-            <select id="selectKey" style="flex-grow: 1; height: 32px; background: #eef0f9; border: none"></select>
+            <select id="selectKey" style="flex-grow: 1; height: 36px; background: #efefef; border: none;
+            border-radius: 4px"></select>
         </label>
-        <form id="newKeyForm" style="display: flex; margin-bottom: 24px; height: 32px">
-            <span style="font-weight: bold; margin-right: 16px; color: #557799; white-space: nowrap; align-self: center">
+        <form id="newKeyForm" style="display: flex; margin-bottom: 24px; height: 36px">
+            <span style="font-weight: bold; margin-right: 16px; white-space: nowrap; align-self: center">
                 New Key
             </span>
             <input id="newKeyName" type="text" placeholder="Key Name"
-                   style="flex-grow: 1; flex-shrink: unset; flex-basis: 0; background: #eef0f9; border: none;
-                   margin-right: 8px" />
+                   style="flex-grow: 1; flex-shrink: unset; flex-basis: 0; background: #efefef; border: none;
+                   border-radius: 4px; margin-right: 8px" />
             <input id="newKeyInput" type="password" placeholder="Key Secret"
-                   style="flex-grow: 1; flex-shrink: unset; flex-basis: 0; height: 32px; background: #eef0f9;
-                   border: none; margin-right: 8px" />
-            <button type="submit" style="flex-shrink: 0; background: #557799; border: none; color: white">Save</button>
+                   style="flex-grow: 1; flex-shrink: unset; flex-basis: 0; height: 36px; background: #efefef;
+                   border: none; border-radius: 4px; margin-right: 8px" />
+            <button type="submit" style="flex-shrink: 0; background: #333333; border: none; border-radius: 8px; color: white">Save</button>
         </form>
         <label style="display: flex; flex-direction: column">
-            <span style="font-weight: bold; color: #557799; margin-bottom: 4px">
+            <span style="font-weight: bold; margin-bottom: 4px">
                 Result
             </span>
-            <textarea id="result" rows="8" style="background: #eef0f9; border: none"></textarea>
+            <textarea id="result" rows="8" style="background: #efefef; border: none; border-radius: 4px"></textarea>
         </label>
         <script src="../libs/aes.js"></script>
         <script src="../libs/tiny-toast.js"></script>
