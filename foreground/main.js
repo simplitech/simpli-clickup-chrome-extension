@@ -53,13 +53,13 @@ const copyToClipboard = (content) => {
 const showDialog = (content) => {
     // create the dialog
     var modal = document.createElement('div')
-    modal.className = "modal"
+    modal.className = "simpli-s-modal"
     modal.innerHTML = "" +
-      "<div class=\"modal-bg modal-exit\"></div>" +
-      "<div class=\"modal-container\">" +
+      "<div class=\"simpli-s-modal-bg simpli-s-modal-exit\"></div>" +
+      "<div class=\"simpli-s-modal-container\">" +
       "<h2>The content was decrypted and copied to your clipboard</h2>" +
-      "<p class='modal-content'><a class='modal-show-decrypted'>SHOW THE DECRYPTED CONTENT</a></p>" +
-      "<a class=\"modal-close modal-exit\">&times;</a>" +
+      "<p class='simpli-s-modal-content'><a class='simpli-s-modal-show-decrypted'>SHOW THE DECRYPTED CONTENT</a></p>" +
+      "<a class=\"simpli-s-modal-close simpli-s-modal-exit\">&times;</a>" +
       "</div>"
 
     // the dialog will auto-close unless the user clicks to read the content
@@ -68,7 +68,7 @@ const showDialog = (content) => {
     }, 3*1000)
 
     // close behaviour
-    modal.querySelectorAll('.modal-exit').forEach((exit) => {
+    modal.querySelectorAll('.simpli-s-modal-exit').forEach((exit) => {
         exit.addEventListener('click', (event) => {
             event.preventDefault()
             removeDialog(modal)
@@ -76,10 +76,10 @@ const showDialog = (content) => {
     })
 
     // show decrypted content behaviour
-    var show = modal.querySelector('.modal-show-decrypted')
+    var show = modal.querySelector('.simpli-s-modal-show-decrypted')
     show.addEventListener('click', (event) => {
         event.preventDefault()
-        var modalContent = modal.querySelector('.modal-content')
+        var modalContent = modal.querySelector('.simpli-s-modal-content')
         modalContent.innerHTML = content
 
         clearTimeout(autoCloseAfterOpen)
