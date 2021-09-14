@@ -19,7 +19,7 @@
     border-radius: 10px;
     background: #fff;
     position: relative;
-    padding: 30px;
+    padding: 16px 32px;
 }
 .simpli-s-modal-close {
     position: absolute;
@@ -27,14 +27,28 @@
     top: 0px;
     outline: none;
     appearance: none;
-    color: red;
+    color: cornflowerblue;
     background: none;
     border: 0px;
     font-size: 32px;
     cursor: pointer;
     text-decoration: none;
 }
-.simpli-s-modal-show-decrypted {
+.simpli-s-modal-content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding-top: 8px;
+}
+.simpli-s-modal-show-decrypted, .simpli-s-modal-copy-decrypted {
+    width: 80px;
+    margin: 0 8px;
     cursor: pointer;
-    text-decoration: underline;
+    background: black;
+    padding: 8px;
+    border-radius: 4px;
+    color: white;
+    text-transform: uppercase;
+    text-align: center;
 }

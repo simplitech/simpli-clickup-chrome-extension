@@ -33,23 +33,10 @@
                 const code = CryptoJS.AES.decrypt(encrypted, key)
                 const decrypted = code.toString(CryptoJS.enc.Utf8)
 
-                copyToClipboard(decrypted)
                 showDialog(decrypted)
             }
         })
     }, false)
-
-    const copyToClipboard = (content) => {
-        const el = document.createElement('textarea')
-        el.value = content
-        el.setAttribute('readonly', '')
-        el.style.position = 'absolute'
-        el.style.left = '-9999px'
-        document.body.appendChild(el)
-        el.select()
-        document.execCommand('copy')
-        document.body.removeChild(el)
-    }
 
     const showDialog = (content) => {
         // create the dialog
@@ -57,10 +44,13 @@
         modal.className = "simpli-s-modal"
         modal.innerHTML = "" +
           "<div class=\"simpli-s-modal-bg simpli-s-modal-exit\"></div>" +
-          "<div class=\"simpli-s-modal-container\">" +
-          "<h2>The content was decrypted and copied to your clipboard</h2>" +
-          "<p class='simpli-s-modal-content'><a class='simpli-s-modal-show-decrypted'>SHOW THE DECRYPTED CONTENT</a></p>" +
-          "<a class=\"simpli-s-modal-close simpli-s-modal-exit\">&times;</a>" +
+              "<div class=\"simpli-s-modal-container\">" +
+                  "<h2>The content was decrypted</h2>" +
+                  "<p class='simpli-s-modal-content'>" +
+                      "<a class='simpli-s-modal-show-decrypted'>Show</a>" +
+                      "<a class='simpli-s-modal-copy-decrypted'>Copy</a>" +
+                  "</p>" +
+              "<a class=\"simpli-s-modal-close simpli-s-modal-exit\">&times;</a>" +
           "</div>"
 
         // the dialog will auto-close unless the user clicks to read the content
@@ -91,11 +81,35 @@
             }, 5 * 60 * 1000)
         })
 
+        var copy = modal.querySelector('.simpli-s-modal-copy-decrypted')
+        copy.addEventListener('click', (event) => {
+            event.preventDefault()
+            copyToClipboard(content)
+            tinyToast.show('Copied to clipboard 😘').hide(2000)
+            removeDialog(modal)
+        })
+
         // show the dialog
         document.body.appendChild(modal)
     }
 
     const removeDialog = (modal) => {
-        document.body.removeChild(modal)
+        try {
+            document.body.removeChild(modal)
+        } catch (e) {
+            // it was already removed
+        }
+    }
+
+    const copyToClipboard = (content) => {
+        const el = document.createElement('textarea')
+        el.value = content
+        el.setAttribute('readonly', '')
+        el.style.position = 'absolute'
+        el.style.left = '-9999px'
+        document.body.appendChild(el)
+        el.select()
+        document.execCommand('copy')
+        document.body.removeChild(el)
     }
 })()
