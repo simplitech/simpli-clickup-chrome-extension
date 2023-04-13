@@ -1,7 +1,7 @@
 {
-    "name": "Simpli Security",
-    "description": "Securely Encrypt and Decrypt a text using a Open Source tool",
-    "version": "1.0.3",
+    "name": "Simpli Clickup",
+    "description": "Small Clickup UI Extensions",
+    "version": "0.1.0",
     "manifest_version": 3,
     "icons": {
         "16": "./images/icon-16x16.png",
@@ -27,10 +27,10 @@
         "scripting"
     ],
     "host_permissions": [
-        "<all_urls>"
+        "https://app.clickup.com/"
     ],
     "content_scripts": [{
-        "matches": ["<all_urls>"],
-        "js": ["libs/tiny-toast.js", "libs/aes.js"]
+        "matches": ["https://app.clickup.com/*"],
+        "js": ["libs/tiny-toast.js"]
     }]
 }

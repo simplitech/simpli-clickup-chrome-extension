@@ -1,104 +1,22 @@
 (() => {
-    document.body.addEventListener('mouseup', (e) => {
-        const selection = window.getSelection().toString()
-        if (!selection || !selection.length || !selection.includes('🔒')) {
-            return
-        }
-
-        let targetText = ''
-        if (selection.includes('🔓')) {
-            targetText = selection
-        } else {
-            const elementContent = e.target.innerHTML
-
-            if (!elementContent || !elementContent.length || !elementContent.includes('🔒') || !elementContent.includes('🔓')) {
-                return
+    const waitForElm = (selector) => {
+        return new Promise(resolve => {
+            if (document.querySelector(selector)) {
+                return resolve(document.querySelector(selector));
             }
 
-            targetText = elementContent
-        }
+            const observer = new MutationObserver(mutations => {
+                if (document.querySelector(selector)) {
+                    resolve(document.querySelector(selector));
+                    observer.disconnect();
+                }
+            });
 
-        const startIndex = targetText.indexOf('🔒') + 2 //to exclude the emoji
-        const endIndex = targetText.indexOf('🔓')
-        targetText = targetText.substring(startIndex, endIndex)
-        const [role, encrypted] = targetText.split('🔑')
-
-        chrome.runtime.sendMessage({
-            message: "getKey",
-            payload: role
-        }, response => {
-            if (response.message === 'success') {
-
-                const key = response.payload
-                const code = CryptoJS.AES.decrypt(encrypted, key)
-                const decrypted = code.toString(CryptoJS.enc.Utf8)
-
-                showDialog(decrypted)
-            }
-        })
-    }, false)
-
-    const showDialog = (content) => {
-        // create the dialog
-        var modal = document.createElement('div')
-        modal.className = "simpli-s-modal"
-        modal.innerHTML = "" +
-          "<div class=\"simpli-s-modal-bg simpli-s-modal-exit\"></div>" +
-              "<div class=\"simpli-s-modal-container\">" +
-                  "<h2>The content was decrypted</h2>" +
-                  "<p class='simpli-s-modal-content'>" +
-                      "<a class='simpli-s-modal-show-decrypted'>Show</a>" +
-                      "<a class='simpli-s-modal-copy-decrypted'>Copy</a>" +
-                  "</p>" +
-              "<a class=\"simpli-s-modal-close simpli-s-modal-exit\">&times;</a>" +
-          "</div>"
-
-        // the dialog will auto-close unless the user clicks to read the content
-        const autoCloseAfterOpen = setTimeout(() => {
-            removeDialog(modal)
-        }, 3 * 1000)
-
-        // close behaviour
-        modal.querySelectorAll('.simpli-s-modal-exit').forEach((exit) => {
-            exit.addEventListener('click', (event) => {
-                event.preventDefault()
-                removeDialog(modal)
-            })
-        })
-
-        // show decrypted content behaviour
-        var show = modal.querySelector('.simpli-s-modal-show-decrypted')
-        show.addEventListener('click', (event) => {
-            event.preventDefault()
-            var modalContent = modal.querySelector('.simpli-s-modal-content')
-            modalContent.innerHTML = content
-
-            clearTimeout(autoCloseAfterOpen)
-
-            // the dialog will auto-close but waiting more
-            setTimeout(() => {
-                removeDialog(modal)
-            }, 5 * 60 * 1000)
-        })
-
-        var copy = modal.querySelector('.simpli-s-modal-copy-decrypted')
-        copy.addEventListener('click', (event) => {
-            event.preventDefault()
-            copyToClipboard(content)
-            tinyToast.show('Copied to clipboard 😘').hide(2000)
-            removeDialog(modal)
-        })
-
-        // show the dialog
-        document.body.appendChild(modal)
-    }
-
-    const removeDialog = (modal) => {
-        try {
-            document.body.removeChild(modal)
-        } catch (e) {
-            // it was already removed
-        }
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
+        });
     }
 
     const copyToClipboard = (content) => {
@@ -112,4 +30,54 @@
         document.execCommand('copy')
         document.body.removeChild(el)
     }
+
+    const extractContentToCopy = () => {
+        const [taskContainer] = document.body.getElementsByClassName("task-container")
+        if (taskContainer) {
+            const id = taskContainer.getAttribute("data-task-id")
+            const title = taskContainer.querySelector("textarea.task-name").value
+            return `CU-${id} - ${title}`
+        }
+        const rowsSelected = document.body.getElementsByClassName("cu-task-row_selected")
+        if (rowsSelected.length) {
+            const tasks = []
+            for (let row of rowsSelected) {
+                const id = row.getAttribute("data-id")
+                const title = row.querySelector("span.cu-task-row-main__link-text-inner").innerHTML
+                tasks.push(`CU-${id} - ${title}`)
+            }
+            return tasks.join("\n")
+        }
+        throw new Error("Could not extract content to copy 😢")
+    }
+
+    // create the tools
+    const toolsDiv = document.createElement('div')
+    toolsDiv.className = "simpli-cu-tools"
+    toolsDiv.innerHTML = "<a class='simpli-cu-modal-copy'>" +
+        "<svg class=\"ng-star-inserted\"><use xlink:href=\"https://app.clickup.com/map.fb7df99db3341b9c7d6c0c5c406c6ffe.svg#svg-sprite-copy-clipboard\"></use></svg>" +
+        "</a>"
+
+    const copyBtn = toolsDiv.querySelector('.simpli-cu-modal-copy')
+    copyBtn.addEventListener('click', (event) => {
+        event.preventDefault()
+        try {
+            const contentToCopy = extractContentToCopy()
+            copyToClipboard(contentToCopy)
+            tinyToast.show('Copied to clipboard 😘').hide(2000)
+        } catch (e) {
+            tinyToast.show(e.message).hide(2000)
+            document.body.getElementsByClassName('tinyToast')[0].style.cssText = 'background: #f88 !important; border-color: #800 !important;'
+        }
+    })
+
+    // show the tools
+    waitForElm(".cu-float-button__toggle-simple").then((elm) => {
+        const [prevTools] = document.body.getElementsByClassName("simpli-cu-tools")
+        if (prevTools) {
+            prevTools.remove()
+        }
+
+        elm.prepend(toolsDiv);
+    });
 })()
